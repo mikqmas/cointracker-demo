@@ -1,14 +1,20 @@
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
-
-import bcrypt
+from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
+from flask_bcrypt import Bcrypt
 
 app = Flask(__name__)
 cors = CORS(app, origins='*')
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///crypto.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['JWT_SECRET_KEY'] = '5fcf70d660455aeb014d5e4e4aab1fdc07b6ffcc2b47ca7869d49b645f1552c6'
+# # normally in env file,but hardcoding here for demo
+# # load_dotenv()
+
+bcrypt = Bcrypt(app)
 db = SQLAlchemy(app)
+jwt = JWTManager(app)
 
 # User Model
 class User(db.Model):
@@ -33,6 +39,9 @@ def index():
 @app.route('/api/users/signup', methods=['POST'])
 def add_user():
     data = request.get_json()
+    user = User.query.filter_by(username=data['username']).first()
+    if user:
+        return jsonify({"error": "Username already exists"}), 400
     try:
         password = data.get('password')
         # contrived password validation (in conjunction with FE validation)
@@ -57,12 +66,19 @@ def login_user():
     data = request.get_json()
     user = User.query.filter_by(username=data['username']).first()
     if user and bcrypt.check_password_hash(user.password_hash, data['password']):
-        return jsonify({"message": "Login successful", "username": user.username}), 200
+        access_token = create_access_token(identity=str(user.id))
+        return jsonify({"message": "Login successful", "access_token": access_token}), 200
     else:
         return jsonify({"error": "Invalid credentials"}), 401
 
 @app.route('/api/users/<int:user_id>/wallets', methods=['GET'])
+@jwt_required()
 def get_user_wallets(user_id):
+    current_user_id = get_jwt_identity()
+    print("HERE: ", current_user_id)
+    if current_user_id != str(user_id):
+        return jsonify({"error": "Unauthorized access"}), 401
+    
     user = User.query.get(user_id)
     if not user:
         return jsonify({"error": "User not found"}), 404
@@ -71,20 +87,29 @@ def get_user_wallets(user_id):
 
     # Serialize wallet data
     wallets_data = [
-        {"address": wallet.address, "balance": wallet.balance}
+        {"address": wallet.address}
         for wallet in wallets
     ]
 
     return jsonify({"user": user.username, "wallets": wallets_data}), 200
 
 @app.route('/api/users/<int:user_id>/wallets', methods=['POST'])
+@jwt_required()
 def add_user_wallet(user_id):
+    current_user_id = get_jwt_identity()
+    if current_user_id != str(user_id):
+        return jsonify({"error": "Unauthorized access"}), 401
+
     user = User.query.get(user_id)
     if not user:
         return jsonify({"error": "User not found"}), 404
 
     data = request.get_json()
-    new_wallet = Wallet(address=data['address'], balance=data['balance'], user_id=user_id)
+
+    if 'address' not in data:
+        return jsonify({"error": "Wallet address not found"}), 404
+
+    new_wallet = Wallet(address=data['address'], user_id=user_id)
     try:
         db.session.add(new_wallet)
         db.session.commit()
@@ -97,7 +122,7 @@ def add_user_wallet(user_id):
 @app.route("/api/users", methods=['GET'])
 def get_users():
     users = User.query.all()
-    usernames = [user.username for user in users]
+    usernames = [{"username": user.username, "id": user.id} for user in users]
     return jsonify(usernames)
 
 if __name__ == "__main__":
