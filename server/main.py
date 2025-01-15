@@ -77,7 +77,6 @@ def login_user():
 @jwt_required()
 def get_user_wallets(user_id):
     current_user_id = get_jwt_identity()
-    print("HERE: ", current_user_id)
     if current_user_id != str(user_id):
         return jsonify({"error": "Unauthorized access"}), 401
     
