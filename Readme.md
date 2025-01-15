@@ -6,6 +6,7 @@ BE:
 | SQLite         | Also because demo, using to show MVP. Also helps it's part of Python's standard library. |
 | SQLAlchemy     | An ORM library for Python, helps with building class model for easier DB work.    |
 | Bcrypt     | Battle tested encryption for passwords, prevent plain text security issue.    |
+| JWT     | Simplifies working with JSON Web Token for login session, verifying user.    |
 
 
 FE:
