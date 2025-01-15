@@ -1,5 +1,5 @@
 # CoinTracker Demo
-![runthrough demo](<video controls src="cointrackerdemo.mp4" title="Demo"></video>)
+[![[runthrough demo](<video controls src="cointrackerdemo.mp4" title="Demo"></video>)](https://github.com/user-attachments/assets/b9f609e6-75ca-4586-b4b6-87cffcc0dd69)](https://github.com/user-attachments/assets/b9f609e6-75ca-4586-b4b6-87cffcc0dd69)
 
 ## Steps to Run Locally
 
