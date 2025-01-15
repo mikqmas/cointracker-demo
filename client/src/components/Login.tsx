@@ -1,8 +1,10 @@
 // src/components/Login.js
 import { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
-const Login = () => {
+export default function Login() {
+    const navigate = useNavigate();
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const { login } = useAuth();
@@ -13,6 +15,7 @@ const Login = () => {
         if (success) {
             alert("success")
             console.log(success)
+            navigate('/');
         } else {
             alert('Invalid credentials');
         }
@@ -32,5 +35,3 @@ const Login = () => {
         </form>
     );
 };
-
-export default Login;
