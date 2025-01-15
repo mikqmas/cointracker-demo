@@ -48,12 +48,14 @@ def add_user():
         if not password or len(password) < 4:
             raise ValueError("Password not valid")
 
-        hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
+        hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
         new_user = User(username=data['username'], password_hash=hashed_password)
         db.session.add(new_user)
         db.session.commit()
+
+        access_token = create_access_token(identity=str(new_user.id))
         
-        return jsonify({"message": "User added successfully"}), 201
+        return jsonify({"message": "User added successfully", "access_token": access_token, "user_id": new_user.id}), 201
     except Exception as e:
         # server log for debugging, TODO: add to logging and monitoring Datadog/AWS Cloudwatch 
         print(f"Error: {e}")
@@ -87,7 +89,7 @@ def get_user_wallets(user_id):
 
     # Serialize wallet data
     wallets_data = [
-        {"address": wallet.address}
+        {"address": wallet.address, "wallet_id": wallet.id}
         for wallet in wallets
     ]
 
@@ -113,7 +115,7 @@ def add_user_wallet(user_id):
     try:
         db.session.add(new_wallet)
         db.session.commit()
-        return jsonify({"message": "Wallet added successfully"}), 201
+        return jsonify({"message": "Wallet added successfully", "wallet_id": new_wallet.id}), 201
     except Exception as e:
         db.session.rollback()
         return jsonify({"error": "Failed to add wallet", "details": str(e)}), 400

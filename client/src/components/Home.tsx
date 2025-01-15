@@ -13,6 +13,6 @@ export default function Home() {
     }, [userID, navigate]); // Dependencies for useEffect
 
     return (
-        <div>test</div>
+        <div>{userID}</div>
     )
 }
