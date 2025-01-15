@@ -13,7 +13,11 @@ FE:
 | Technology     | Notes                         |
 |----------------|-------------------------------|
 | React          | A JavaScript library for building user interfaces. |
+| React Router DOM     | Helps with routing pages. |
 | Vite          | Easy build, generally more opinionated but quicker than webpack. |
+| Tailwind          | Tame css, colocation issue with standarized class names |
+| Flowbite          | Reusable UI components built on Tailwind. |
+| Axios          | Help with client HTTP requests to BlockChair. |
 
 
 Misc:
