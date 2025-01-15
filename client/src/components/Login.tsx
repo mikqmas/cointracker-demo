@@ -3,11 +3,15 @@ import { useEffect, useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 
+import { Button, Card, Checkbox, Label, TextInput } from "flowbite-react";
+import Toast from './Shared/Toast';
+
 export default function Login() {
     const navigate = useNavigate();
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const { login, signup, userID } = useAuth();
+    const [toast, setToast] = useState(null);
 
     useEffect(() => {
         console.log(userID)
@@ -22,29 +26,43 @@ export default function Login() {
         if (e.nativeEvent.submitter.name == "login") {
             success = await login(username, password);
         } else {
-            console.log("signup")
             success = await signup(username, password);
         }
         if (success) {
-            alert("success")
             navigate('/');
         } else {
-            alert('Invalid credentials');
+            console.log('toasting')
+            setToast(<div className='absolute bottom-5 left-1/2 transform -translate-x-1/2'><Toast text="Invalid, try again."/></div>)
+            setTimeout(() => {setToast(null)}, 3000)
         }
     };
 
     return (
-        <form onSubmit={handleSubmit}>
-            <div>
-                <label>Username</label>
-                <input type="text" value={username} onChange={(e) => setUsername(e.target.value)} required />
-            </div>
-            <div>
-                <label>Password</label>
-                <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
-            </div>
-            <button type="submit" name="login">Login</button>
-            <button type="submit" name="signup">Signup</button>
-        </form>
+        <div>
+            {toast != null && toast}
+            <Card className="max-w-sm">
+                <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
+                    <div>
+                    <div className="mb-2 block">
+                        <Label htmlFor="username" value="Username" />
+                    </div>
+                    <TextInput id="username" type="text" placeholder="sam" onChange={(e) => setUsername(e.target.value)} required  />
+                    </div>
+                    <div>
+                    <div className="mb-2 block">
+                        <Label htmlFor="password1" value="Password" />
+                    </div>
+                    <TextInput id="password1" type="password" onChange={(e) => setPassword(e.target.value)} required  />
+                    </div>
+                    <div className="flex items-center gap-2">
+                    <Checkbox id="remember" />
+                    <Label htmlFor="remember">Remember me</Label>
+                    </div>
+                    <Button outline color="blue" type="submit" name="login">Login</Button>
+                    <Button color="blue" type="submit" name="signup">Signup</Button>
+                </form>
+            </Card>
+        </div>
+            
     );
 };

@@ -26,7 +26,6 @@ export default function Home() {
 
     return (
         <div>
-            {userID}
             <ErrorBoundary fallback={<ErrorFallback />}>
                 <Suspense fallback={<div>Loading...</div>}>
                     <Wallets />

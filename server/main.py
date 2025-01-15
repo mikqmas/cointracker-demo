@@ -32,9 +32,10 @@ class Wallet(db.Model):
 with app.app_context():
     db.create_all()
 
+# for testing
 @app.route('/')
 def index():
-    return 'Welcome to the CoinTracker-Demo!'
+    return jsonify({"message": 'Welcome to the CoinTracker-Demo!'})
 
 @app.route('/api/users/signup', methods=['POST'])
 def add_user():
