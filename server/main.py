@@ -26,7 +26,7 @@ class User(db.Model):
 # Wallet Model
 class Wallet(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    address = db.Column(db.String(64), unique=True, nullable=False)
+    address = db.Column(db.String(64), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False, index=True)
 
 with app.app_context():
@@ -117,6 +117,28 @@ def add_user_wallet(user_id):
     except Exception as e:
         db.session.rollback()
         return jsonify({"error": "Failed to add wallet", "details": str(e)}), 400
+
+@app.route('/api/users/<int:user_id>/wallets/<int:wallet_id>', methods=['DELETE'])
+@jwt_required()
+def delete_wallet(user_id, wallet_id):
+    current_user_id = get_jwt_identity()
+
+    if current_user_id != str(user_id):
+        return jsonify({"error": "Unauthorized access"}), 401
+
+    wallet = Wallet.query.filter_by(id=wallet_id, user_id=user_id).first()
+
+    if not wallet:
+        return jsonify({"error": "Wallet not found"}), 404
+
+    try:
+        db.session.delete(wallet)
+        db.session.commit()
+
+        return jsonify({"message": "Wallet deleted successfully"}), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": "Failed to delete wallet", "details": str(e)}), 500
 
 # for testing only
 @app.route("/api/users", methods=['GET'])
