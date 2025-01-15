@@ -1,6 +1,8 @@
 from flask import Flask, jsonify
-app = Flask(__name__)
+from flask_cors import CORS
 
+app = Flask(__name__)
+cors = CORS(app, origins='*')
 
 @app.route('/')
 def index():
