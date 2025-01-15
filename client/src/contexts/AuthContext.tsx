@@ -1,10 +1,22 @@
 import { createContext, useState, useContext, ReactNode } from 'react';
 import axios from 'axios';
 
-const defaultUser = {}
-const AuthContext = createContext(defaultUser);
+const dummyUser: User = {
+    userID: null,
+    token: null,
+    login: null,
+    logout: () => {}
+}
+const AuthContext = createContext(dummyUser);
 
 export const useAuth = () => useContext(AuthContext);
+
+interface User {
+    userID: string | null,
+    token: string | null,
+    login: ((username: string, password: string) => Promise<boolean>) | null,
+    logout: () => void
+}
 
 interface AuthProviderProps {
     children: ReactNode
@@ -33,18 +45,18 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     };
 
     const logout = () => {
-        setUser(null);
+        setUserID(null);
         setToken('');
         localStorage.removeItem('token');
         localStorage.removeItem('user_id');
     };
 
-    const value = {
+    const user: User = {
         userID,
         token,
         login,
         logout,
     };
 
-    return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+    return <AuthContext.Provider value={user}>{children}</AuthContext.Provider>;
 };

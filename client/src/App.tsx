@@ -1,11 +1,13 @@
 import './App.css'
 
-function App() {
-  return (
-    <>
-      hello world
-    </>
-  )
-}
+import { AuthProvider } from './contexts/AuthContext';
+import Login from './components/Login';
 
-export default App
+export default function App() {
+    return (
+        <AuthProvider>
+          <Login />
+        </AuthProvider>
+    );
+};
+
