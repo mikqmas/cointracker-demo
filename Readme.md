@@ -1,23 +1,30 @@
-<video controls src="cointrackerdemo.mp4" title="Demo"></video>
+# CoinTracker Demo
+![runthrough demo](<video controls src="cointrackerdemo.mp4" title="Demo"></video>)
 
-git clone htt
+## Steps to Run Locally
 
-SETUP (Windows)
-BE:
-cd .\CoinTracker-Demo\server
-python -m venv .venv
-.\.venv\Scripts\activate
-pip install -r requirements.txt
-python main.py
+### Clone the Repository
+`git clone 
+[https://github.com/mikqmas/cointracker-demo.git](https://github.com/mikqmas/cointracker-demo.git)`
 
-FE:
-cd .\CoinTracker-Demo\client
-npm install
-npm run dev
+## SETUP (Windows)
+### BE:
+1. open Terminal
+2. `cd .\CoinTracker-Demo\server`
+3. `python -m venv venv`
+4. `.\venv\Scripts\activate`
+5. `pip install -r requirements.txt`
+6. `python main.py`
 
+### FE:
+1. open a new Terminal
+2. `cd .\CoinTracker-Demo\client`
+3. `npm install`
+4. `npm run dev`
 
+---
 
-BE:
+### BE:
 | Technology     | Notes                         |
 |----------------|-------------------------------|
 | Flask          | A quick demo app, benefit of lightweight API framework. |
@@ -29,7 +36,7 @@ BE:
 | PyTest     | Python testing framework    |
 
 
-FE:
+### FE:
 | Technology     | Notes                         |
 |----------------|-------------------------------|
 | React          | A JavaScript library for building user interfaces. |
@@ -42,19 +49,18 @@ FE:
 | React-Testing-Library          | DOM and React component test helper |
 
 
-Misc:
-
+### Misc:
 | Technology     | Notes                         |
 |----------------|-------------------------------|
 | Insomnia          | This or POSTMAN, helps with API work |
 
+## Further Thoughts
+- Caching API call results
+- Security: Store passwords securely by hashing them and never store plain text passwords.
+- Scalability: Ensure your schema can scale as the number of users and wallets grows. You might consider partitioning or sharding if needed.
+- Backup and Recovery: Implement a robust backup and recovery strategy to prevent data loss.
+- Better validations: validating wallet address
 
-Futher things to discuss, future implementations:
-Security: Store passwords securely by hashing them and never store plain text passwords.
-Scalability: Ensure your schema can scale as the number of users and wallets grows. You might consider partitioning or sharding if needed.
-Backup and Recovery: Implement a robust backup and recovery strategy to prevent data loss.
-
-Questions to answer:
 - DB - why SQLite
 - API - REST vs GraphQL
 - automation - CI/CD using Jenkins - build on deploy, test suite

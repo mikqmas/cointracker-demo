@@ -24,36 +24,34 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const login = async (username: string, password: string) => {
         try {
             const response = await axios.post('http://localhost:8080/api/users/login', { username, password });
-            const { access_token, user_id } = response.data;
-            if (!access_token || !user_id) {
-                throw Error(`access token: ${access_token}, userid: ${user_id}`)
+            const { access_token, user_id, error } = response.data;
+            if (error) { 
+                return {result: false, message: error};
             }
             setUserID(user_id);
             setToken(access_token);
             localStorage.setItem('token', access_token);
             localStorage.setItem('user_id', user_id);
-            return true;
-        } catch (error) {
-            console.error("Login failed:", error);
-            return false;
+            return {result: true, message: 'success'};
+        } catch (e) {
+            return {result: false, message: e};
         }
     };
 
     const signup = async (username: string, password: string) => {
         try {
             const response = await axios.post('http://localhost:8080/api/users/signup', { username, password });
-            const { access_token, user_id } = response.data;
-            if (!access_token || !user_id) {
-                throw Error(`access token: ${access_token}, userid: ${user_id}`)
+            const { access_token, user_id, error } = response.data;
+            if (error) { 
+                return {result: false, message: error};
             }
             setUserID(user_id);
             setToken(access_token);
             localStorage.setItem('token', access_token);
             localStorage.setItem('user_id', user_id);
-            return true;
-        } catch (error) {
-            console.error("Login failed:", error);
-            return false;
+            return {result: true, message: 'success'};
+        } catch (e) {
+            return {result: false, message: e};
         }
     };
 

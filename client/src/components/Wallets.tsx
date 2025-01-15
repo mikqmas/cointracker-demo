@@ -74,18 +74,18 @@ export default function Wallets() {
         <div>
             {toast != null && toast}
             <Modal show={showModal} handleAddWallet={handleAddWallet} setShowModal={setShowModal}/>
-            <Button className='absolute top-4 right-4' color='red' onClick={logout}>Logout</Button>
+            <Button className='absolute top-4 right-4' color='purple' onClick={logout}>Logout</Button>
             <div className="w-full max-w-md p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-8 dark:bg-gray-800 dark:border-gray-700">
                 <div className="flex items-center justify-between mb-4">
                     <h5 className="text-xl font-bold leading-none text-gray-900 dark:text-white">Wallets</h5>
                     <Button color='blue' onClick={toggleModal}>Add Wallet</Button>
             </div>
             {
-                loading ? <div>loading...</div> :
                 <div className="flow-root">
                         <ul role="list" className="divide-y divide-gray-200 dark:divide-gray-700">
                             {wallets.map(wallet => <Card key={wallet.address} info={wallet} handleClick={handleClick} />)}
                         </ul>
+                        {loading && <div>loading...</div>}
                 </div>
             }
             </div>

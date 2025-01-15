@@ -62,8 +62,10 @@ export default function Transactions() {
 
     const transactionsFrag = () => {
         return (
+            transactions.length < 1 && !loading ? <div>No Transactions</div> : 
             <>
                 {transactions.map(transaction => <Transaction key={transaction.hash} info={transaction} />)}
+                {loading && <div>loading...</div>}
                 {!finished && <Button className="left-1/2 -translate-x-1/2 $disabled:opacity-50 disabled:cursor-not-allowed" color="blue" disabled={finished} onClick={loadTransactions}>Load More</Button>}
             </>
         )
@@ -86,7 +88,7 @@ export default function Transactions() {
                     <div className="flow-root">
                             <ul role="list" className="divide-y divide-gray-200 dark:divide-gray-700">
                                 <Suspense fallback={<div>Loading...</div>}>
-                                    { loading ? <div>loading...</div> : transactions.length < 1 ? <div>No Transactions</div> : transactionsFrag()}
+                                    {transactionsFrag()}
                                 </Suspense>
                             </ul>
                     </div>

@@ -14,7 +14,6 @@ export default function Login() {
     const [toast, setToast] = useState(null);
 
     useEffect(() => {
-        console.log(userID)
         if (userID) {
             navigate("/");
         }
@@ -22,17 +21,16 @@ export default function Login() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        let success = false;
+        let success = {result: false, message: ''};
         if (e.nativeEvent.submitter.name == "login") {
             success = await login(username, password);
         } else {
             success = await signup(username, password);
         }
-        if (success) {
+        if (success.result) {
             navigate('/');
         } else {
-            console.log('toasting')
-            setToast(<div className='absolute bottom-5 left-1/2 transform -translate-x-1/2'><Toast text="Invalid, try again."/></div>)
+            setToast(<div className='absolute bottom-5 left-1/2 transform -translate-x-1/2'><Toast text={success.message.message}/></div>)
             setTimeout(() => {setToast(null)}, 3000)
         }
     };
@@ -58,7 +56,7 @@ export default function Login() {
                     <Checkbox id="remember" />
                     <Label htmlFor="remember">Remember me</Label>
                     </div>
-                    <Button outline color="blue" type="submit" name="login">Login</Button>
+                    <Button color='success' type="submit" name="login">Login</Button>
                     <Button color="blue" type="submit" name="signup">Signup</Button>
                 </form>
             </Card>
