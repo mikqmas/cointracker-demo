@@ -61,6 +61,38 @@ def login_user():
     else:
         return jsonify({"error": "Invalid credentials"}), 401
 
+@app.route('/api/users/<int:user_id>/wallets', methods=['GET'])
+def get_user_wallets(user_id):
+    user = User.query.get(user_id)
+    if not user:
+        return jsonify({"error": "User not found"}), 404
+
+    wallets = Wallet.query.filter_by(user_id=user_id).all()
+
+    # Serialize wallet data
+    wallets_data = [
+        {"address": wallet.address, "balance": wallet.balance}
+        for wallet in wallets
+    ]
+
+    return jsonify({"user": user.username, "wallets": wallets_data}), 200
+
+@app.route('/api/users/<int:user_id>/wallets', methods=['POST'])
+def add_user_wallet(user_id):
+    user = User.query.get(user_id)
+    if not user:
+        return jsonify({"error": "User not found"}), 404
+
+    data = request.get_json()
+    new_wallet = Wallet(address=data['address'], balance=data['balance'], user_id=user_id)
+    try:
+        db.session.add(new_wallet)
+        db.session.commit()
+        return jsonify({"message": "Wallet added successfully"}), 201
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": "Failed to add wallet", "details": str(e)}), 400
+
 # for testing only
 @app.route("/api/users", methods=['GET'])
 def get_users():
